@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "XCom Scrubber",
+  "version": "1.0.0",
+  "description": "Safely bulk-delete posts from X Communities you admin. Human-like timing, zero data collection.",
+  "permissions": ["activeTab"],
+  "host_permissions": ["https://x.com/*"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://x.com/i/communities/*"],
+      "js": ["scrubber.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'none'; connect-src 'none'"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

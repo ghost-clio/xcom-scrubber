@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 320px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0a0a0a;
+      color: #e7e9ea;
+      padding: 16px;
+    }
+    h1 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .subtitle {
+      font-size: 12px;
+      color: #71767b;
+      margin-bottom: 16px;
+    }
+    .status-box {
+      background: #16181c;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+    .status-label {
+      font-size: 11px;
+      color: #71767b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    .status-value {
+      font-size: 24px;
+      font-weight: 700;
+    }
+    .stats {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .stat {
+      flex: 1;
+      background: #16181c;
+      border-radius: 8px;
+      padding: 8px;
+      text-align: center;
+    }
+    .stat-num {
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .stat-label {
+      font-size: 10px;
+      color: #71767b;
+    }
+    .speed-control {
+      background: #16181c;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+    .speed-control label {
+      font-size: 12px;
+      color: #71767b;
+      display: block;
+      margin-bottom: 6px;
+    }
+    .speed-options {
+      display: flex;
+      gap: 6px;
+    }
+    .speed-btn {
+      flex: 1;
+      padding: 6px 4px;
+      border: 1px solid #333639;
+      border-radius: 6px;
+      background: transparent;
+      color: #e7e9ea;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .speed-btn:hover { border-color: #1d9bf0; }
+    .speed-btn.active {
+      background: #1d9bf0;
+      border-color: #1d9bf0;
+      color: white;
+    }
+    button.primary {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+      margin-bottom: 6px;
+    }
+    .btn-start {
+      background: #1d9bf0;
+      color: white;
+    }
+    .btn-start:hover { background: #1a8cd8; }
+    .btn-start:disabled {
+      background: #333;
+      color: #666;
+      cursor: not-allowed;
+    }
+    .btn-pause {
+      background: #f7931a;
+      color: white;
+    }
+    .btn-stop {
+      background: #f4212e;
+      color: white;
+    }
+    .btn-stop:hover { background: #dc1d28; }
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: #333639;
+      border-radius: 2px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: #1d9bf0;
+      border-radius: 2px;
+      transition: width 0.3s;
+      width: 0%;
+    }
+    .warning {
+      font-size: 11px;
+      color: #71767b;
+      text-align: center;
+      margin-top: 8px;
+      line-height: 1.4;
+    }
+    .warning a {
+      color: #1d9bf0;
+      text-decoration: none;
+    }
+    .not-community {
+      text-align: center;
+      padding: 20px 0;
+      color: #71767b;
+    }
+    .not-community .emoji {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧹 XCom Scrubber</h1>
+  <p class="subtitle">Community post cleaner — safe & human-like</p>
+
+  <div id="not-community" class="not-community" style="display:none;">
+    <div class="emoji">📍</div>
+    <p>Navigate to an X Community page first</p>
+    <p style="margin-top:8px;font-size:11px;">x.com/i/communities/...</p>
+  </div>
+
+  <div id="main-ui">
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress"></div>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-num" id="deleted-count">0</div>
+        <div class="stat-label">Deleted</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="failed-count">0</div>
+        <div class="stat-label">Failed</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="session-count">0</div>
+        <div class="stat-label">This Session</div>
+      </div>
+    </div>
+
+    <div class="speed-control">
+      <label>Speed (slower = safer)</label>
+      <div class="speed-options">
+        <button class="speed-btn" data-speed="careful">🐢 Careful</button>
+        <button class="speed-btn active" data-speed="normal">🚶 Normal</button>
+        <button class="speed-btn" data-speed="fast">🏃 Fast</button>
+      </div>
+    </div>
+
+    <button class="primary btn-start" id="start-btn">Start Scrubbing</button>
+    <button class="primary btn-pause" id="pause-btn" style="display:none;">Pause</button>
+    <button class="primary btn-stop" id="stop-btn" style="display:none;">Stop</button>
+
+    <p class="warning">
+      No data leaves your browser. Ever.<br>
+      <a href="https://github.com/ghost-clio/xcom-scrubber" target="_blank">View source ↗</a>
+    </p>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
